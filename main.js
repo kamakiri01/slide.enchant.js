@@ -18,6 +18,7 @@ var SLIDE_FRAMELATE = 20;
 
 //表示しているスライドのページ番号
 var slideIndex = 0;
+
 //スライドクラスのリスト
 var slides = [];
 
