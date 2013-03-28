@@ -7,7 +7,6 @@
  * @description
  * Library for making slide-view UI in enchant.js.
 */
-//var code = "javascript:console.log('messageListenerOnload'+ enchant.Core.instance.width);window.addEventListener('message', function (e, origin) { console.log('keydown');try {var jdata = eval(e.data);if (jdata.act == 'keydown') {enchant.Game.instance.dispatchEvent('keydown'); var button = enchant.Game.instance._keybind[jdata.value];var evt = new enchant.Event(button + 'buttondown');enchant.Game.instance.dispatchEvent(evt);} else if (jdata.act == 'keyup') {enchant.Game.instance.dispatchEvent('keyup');var button = enchant.Game.instance._keybind[jdata.value];var evt = new enchant.Event(button + 'buttonup');enchant.Game.instance.dispatchEvent(evt);}} catch (e) {console.log('bad call: ' + e);}});";
 //CONFIG PARAMS
 
 /**
@@ -21,12 +20,9 @@ var SLIDE_TYPE = enchant.Easing.QUAD_EASEINOUT;
 var SLIDE_FRAMELATE = 20;
 
 /**
- * 
+ * ライブラリの使用する変数
 */
-
-//表示しているスライドのページ番号
 var slideIndex = 0;
-//スライドクラスのリスト
 var slides = [];
 
 /**
@@ -61,15 +57,87 @@ var DSlide = enchant.Class.create(enchant.DOMScene, {
 /**
  * ラベル生成メソッド
 */
-function createLabel(size, text){
+function createLabel(size, text, color){
 	var label = new Label();
-	label.width = enchant.Core.instance.width * 0.9;//ラベルの描画幅を折り返してもはみ出さない範囲で最大化
+	label.width = enchant.Core.instance.width * 0.9;    //ラベルの描画幅を折り返してもはみ出さない範囲で最大化
 	label.font = size + 'px bold sans';
     label.text = text;
-//    label.updateBoundArea();//widthのsetterで呼ばれているが再読する
+    
+    if(color != undefined){
+        label.color = color;
+    };
+//    label.updateBoundArea();  //widthのsetterで呼ばれているが再読する
 	return label;
 }
 
+/**
+ * 数式スプライト生成メソッド
+*/
+function createFormula(latex, size, color){
+    var _size;
+    var _color;
+
+    if(size != undefined){
+        _size = size;
+    }else{
+        _size = 20;
+    };
+
+    if(color != undefined){
+        _color = color;
+    }else{
+        _color = "000000ff";
+    };
+
+    var uri = encodeURI(latex);
+    var googleAPICode = 'http://chart.apis.google.com/chart?cht=tx&chf=bg,s,ffffff00&chco='+ _color +'&chs='+ _size +'&chl='+ uri;
+    console.log(googleAPICode);
+
+    //後から素材読み込み
+//    googleAPICode = "colors9.png";
+    enchant.Core.instance.load(googleAPICode, function(){});
+    enchant.Core.instance.preload(googleAPICode);
+
+    //読み込めているかテスト
+    console.log("*****check*****");
+    console.log(enchant.Core.instance.assets); 
+    console.log("");
+    console.log(enchant.Core.instance.assets[googleAPICode]); 
+/*
+    console.log(enchant.Core.instance.assets["chara1.png"]); 
+    console.log("");
+    console.log(Object.getOwnPropertyNames(enchant.Core.instance.assets[googleAPICode])); 
+    console.log(Object.getOwnPropertyNames(enchant.Core.instance.assets["chara1.png"])); 
+    console.log("*****checkEnd*****");
+    console.log("*****check2*****");
+    console.log(enchant.Core.instance.assets[googleAPICode].width); 
+    console.log(enchant.Core.instance.assets["chara1.png"].width); 
+
+    console.log(enchant.Core.instance.assets[googleAPICode]._element); 
+    var width = enchant.Core.instance.assets[googleAPICode].width;
+    var height = enchant.Core.instance.assets[googleAPICode].height;
+*/  
+
+    var sprite = new Sprite(100,100);
+    var surface = new Surface(100,100);
+    var img = document.createElement('img');
+    img.src = googleAPICode;
+    var obj = {};
+    img.onload = function(){
+    
+        obj._element = img;
+
+        sprite.image = surface;
+        surface.draw(obj, 0,0,100,100 );
+        surface.context.drawImage(img,0,0,100,100);
+    }
+//    surface.draw(enchant.Core.instance.assets[googleAPICode], 0, 0, 100, 100);
+    //sprite.image = enchant.Core.instance.assets[googleAPICode];
+    sprite.x = 10;
+    sprite.y = 10;
+    
+    return sprite;
+}
 
 /**
  * トップページ風レイアウトのスライドクラス
@@ -77,6 +145,7 @@ function createLabel(size, text){
 var TitleSlide = enchant.Class.create(Slide, {
 	initialize:function(title, subtitle){
 		Slide.call(this);
+
 		//タイトルの生成
         this._title = createLabel(64, title);
 		this.addChild(this._title);
@@ -205,6 +274,8 @@ var FrameSlide = enchant.Class.create(DSlide, {
 //			this.removeChild(sprite);
 		});
 	},
+
+    //フレーム内にキーイベントを送る
     addKeyEvent:function(){
         this._onkeydown = function(e){
             console.log(this.onkeydown._target.getAttribute("src"));
@@ -253,7 +324,7 @@ var ImageSlide = enchant.Class.create(Slide, {
             this._title.x = enchant.Core.instance.width/2 - this._title._boundWidth/2;
             this._title.y = enchant.Core.instance.height * 0.05;
         }
-        enchant.Core.instance.preload(image);
+//        enchant.Core.instance.preload(image);
 		var sprite = new Sprite(enchant.Core.instance.assets[image].width, enchant.Core.instance.assets[image].height);
 		sprite.image = enchant.Core.instance.assets[image];
         sprite.x = enchant.Core.instance.width/2 - sprite.width /2
@@ -286,6 +357,7 @@ enchant.Core.prototype.prev = function(){
     }
     return false;
 }
+
 /**
  * スライドを進める
 */
@@ -311,3 +383,8 @@ enchant.Core.prototype.next = function(){
     console.log("slideIndex:" + slideIndex);
     return false;
 }
+/*
+ocument.body.addEventListener('mousedown', function(){
+    	enchant.Core.instance.next();
+    });
+*/
