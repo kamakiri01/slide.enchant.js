@@ -1,12 +1,13 @@
 /**
  * @fileOverview slide.encahant.js
- * @version 0.2.1
+ * @version 0.2.2
  * @require enchant.js v0.6.2+
- * @author kamakiri_ys
+ * @author kamakiri01
  *
  * @description
  * Library for making slide-view UI in enchant.js.
 */
+
 //CONFIG PARAMS
 
 /**
@@ -20,10 +21,11 @@ var SLIDE_TYPE = enchant.Easing.QUAD_EASEINOUT;
 var SLIDE_FRAMELATE = 20;
 
 /**
- * ライブラリの使用する変数
+ * slide.enchant.jsの使用する変数
 */
 var slideIndex = 0;
 var slides = [];
+
 
 /**
  * Sceneの拡張スライドクラス
@@ -52,92 +54,6 @@ var DSlide = enchant.Class.create(enchant.DOMScene, {
  *
  * FrameSlide内で行うことを推奨
 */
-
-
-/**
- * ラベル生成メソッド
-*/
-function createLabel(size, text, color){
-	var label = new Label();
-	label.width = enchant.Core.instance.width * 0.9;    //ラベルの描画幅を折り返してもはみ出さない範囲で最大化
-	label.font = size + 'px bold sans';
-    label.text = text;
-    
-    if(color != undefined){
-        label.color = color;
-    };
-//    label.updateBoundArea();  //widthのsetterで呼ばれているが再読する
-	return label;
-}
-
-/**
- * 数式スプライト生成メソッド
-*/
-function createFormula(latex, size, color){
-    var _size;
-    var _color;
-
-    if(size != undefined){
-        _size = size;
-    }else{
-        _size = 20;
-    };
-
-    if(color != undefined){
-        _color = color;
-    }else{
-        _color = "000000ff";
-    };
-
-    var uri = encodeURI(latex);
-    var googleAPICode = 'http://chart.apis.google.com/chart?cht=tx&chf=bg,s,ffffff00&chco='+ _color +'&chs='+ _size +'&chl='+ uri;
-    console.log(googleAPICode);
-
-    //後から素材読み込み
-//    googleAPICode = "colors9.png";
-    enchant.Core.instance.load(googleAPICode, function(){});
-    enchant.Core.instance.preload(googleAPICode);
-
-    //読み込めているかテスト
-    console.log("*****check*****");
-    console.log(enchant.Core.instance.assets); 
-    console.log("");
-    console.log(enchant.Core.instance.assets[googleAPICode]); 
-/*
-    console.log(enchant.Core.instance.assets["chara1.png"]); 
-    console.log("");
-    console.log(Object.getOwnPropertyNames(enchant.Core.instance.assets[googleAPICode])); 
-    console.log(Object.getOwnPropertyNames(enchant.Core.instance.assets["chara1.png"])); 
-    console.log("*****checkEnd*****");
-    console.log("*****check2*****");
-    console.log(enchant.Core.instance.assets[googleAPICode].width); 
-    console.log(enchant.Core.instance.assets["chara1.png"].width); 
-
-    console.log(enchant.Core.instance.assets[googleAPICode]._element); 
-    var width = enchant.Core.instance.assets[googleAPICode].width;
-    var height = enchant.Core.instance.assets[googleAPICode].height;
-*/  
-
-    var sprite = new Sprite(100,100);
-    var surface = new Surface(100,100);
-    var img = document.createElement('img');
-    img.src = googleAPICode;
-    var obj = {};
-    img.onload = function(){
-    
-        obj._element = img;
-
-        sprite.image = surface;
-        surface.draw(obj, 0,0,100,100 );
-        surface.context.drawImage(img,0,0,100,100);
-    }
-//    surface.draw(enchant.Core.instance.assets[googleAPICode], 0, 0, 100, 100);
-    //sprite.image = enchant.Core.instance.assets[googleAPICode];
-    sprite.x = 10;
-    sprite.y = 10;
-    
-    return sprite;
-}
 
 /**
  * トップページ風レイアウトのスライドクラス
@@ -189,6 +105,7 @@ var TitleSlide = enchant.Class.create(Slide, {
 	}
 });
 
+
 /**
  * 列挙型表示のスライドクラス
 */
@@ -218,6 +135,7 @@ var ItemSlide = enchant.Class.create(Slide, {
         }
 	}
 });
+
 
 /**
  * iframeを表示するスライドクラス
@@ -301,6 +219,7 @@ var FrameSlide = enchant.Class.create(DSlide, {
 
 });
 
+
 /**
  * コードをハイライト表示するスライドクラス
  * ※未完成
@@ -310,6 +229,7 @@ var CodeSlide = enchant.Class.create(FrameSlide, {
 		FrameSlide.call(this,'../code/demo/complete.html?' + url, width, height);
 	}
 });
+
 
 /**
  * 画像を表示するスライドクラス
@@ -332,6 +252,94 @@ var ImageSlide = enchant.Class.create(Slide, {
 		this.addChild(sprite);
     },
 });
+
+
+/**
+ * ラベル生成メソッド
+*/
+function createLabel(size, text, color){
+	var label = new Label();
+	label.width = enchant.Core.instance.width * 0.9;    //ラベルの描画幅を折り返してもはみ出さない範囲で最大化
+	label.font = size + 'px bold sans';
+    label.text = text;
+    
+    if(color != undefined){
+        label.color = color;
+    };
+//    label.updateBoundArea();  //widthのsetterで呼ばれているが再読する
+	return label;
+}
+
+
+/**
+ * 数式スプライト生成メソッド
+ * エスケープ文字を含んだTeX形式の数式スプライトを生成する
+ * 
+ * @example
+ * "E=\\pm\\frac{m}{\\sqrt{1-\\frac{v^2}{c^2}}}c^2"
+*/
+function createFormula(latex, size, color){
+    var _size;
+    var _color;
+
+    if(size != undefined){
+        _size = size;
+    }else{
+        _size = 40;
+    };
+
+    if(color != undefined){
+        _color = color;
+    }else{
+        _color = "000000ff";
+    };
+
+    var googleAPICode = 
+        'http://chart.apis.google.com/chart?cht=tx&chf=bg,s,ffffff00'
+        +'&chco=' + _color 
+        +'&chs=' + _size 
+        +'&chl=' + encodeURIComponent(latex);
+
+    var img = document.createElement('img');
+    img.src = googleAPICode;
+    
+    var sprite = new LazySprite(img);
+    return sprite;
+}
+
+
+/*
+ * 外部ファイル等読み込み時間を要する画像を非同期読み込みして
+ * スプライトに利用する
+ * */
+var LazySprite = enchant.Class.create(enchant.Sprite, {
+    initialize:function(img){
+        enchant.Sprite.call(this, 1, 1);
+        
+        this._sImg = img;
+        this._sWidth;
+        this._sheight;
+        this._sImg.parent = this;
+
+        this._sImg.onload = function(){
+            var _width = this.width;
+            var _height = this.height;
+            
+            this.parent.width = _width;
+            this.parent.height = _height;
+            
+            var o = {};
+            o._element = this;
+            this.parent.image = new Surface(_width, _height);
+            this.parent.image.draw(o, 0, 0, _width, _height);
+//            this.image.context.drawImage(img,0, 0, _width, _height);
+        };
+    },
+    loadComp:function(){
+        this.image = new Surface();
+    }
+});
+
 
 /**
  * スライドを戻す
@@ -357,6 +365,7 @@ enchant.Core.prototype.prev = function(){
     }
     return false;
 }
+
 
 /**
  * スライドを進める

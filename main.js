@@ -13,8 +13,10 @@ window.onload = function(){
    		this.prev();
    	});
     game.onload = function(){
-    	slides.push(new TitleSlide('slide.enchant.js', 'v0.6.3対応<br>with tl.enchant.js'));
-    	slides.push(new TitleSlide('enchant.jsでプレゼンツールを作りました。'));
+    	slides.push(new TitleSlide('slide.enchant.js', 'v0.6.3対応<br>with enchant.js'));
+
+        slides.push(new TitleSlide('enchant.jsでプレゼンツールを作りました。'));
+
     	slides.push(new TitleSlide('kondoさんに感謝', '元はkondoさん作'));
     	slides.push(new ItemSlide('こんなレイアウトができます', ['TitleSlide','ItemSlide', 'FrameSlide', 'ImageSlide', 'etc...']));
     	slides.push(new TitleSlide('TitleSlide', '表紙向けレイアウト'));
@@ -27,6 +29,19 @@ window.onload = function(){
     	slides.push(new FrameSlide('http://r.jsgames.jp/games/2620/', 320,320));
     	slides.push(new TitleSlide('ImageSlide'));
     	slides.push(new ImageSlide("13A.jpg", 'ローカルの画像を表示'));
+        slides.push((function(scene){
+            var view = new ItemSlide("TeXの数式を表示",['googleChartAPIを利用(ネット必須)<br>'+
+                'ローカル完結したいときは普通にスプライトを使う']);
+            var f = createFormula("E=\\pm\\frac{m}{\\sqrt{1-\\frac{v^2}{c^2}}}c^2", 80);
+            f.x = 300;
+            f.y = 300;
+            f.scaleX=2;
+            f.scaleY=2;
+            view.addChild(f);
+         
+            return view;
+        })());
+    	slides.push(new TitleSlide('ゲームエンジン<br>だからできること'));
     	slides.push(new TitleSlide('スライドにenchant.jsの処理を後付できる'));
     	slides.push((function(scene){
             var s = new Slide();
@@ -80,14 +95,14 @@ window.onload = function(){
             });
             return view;
         })());
-    	slides.push(new ItemSlide('今後の予定', ['3D対応しない(Frame使って下さい)', '数式、グラフ表示(自分が本当に必要だった機能)','', 'あとは使うとき作る']));
+    	slides.push(new ItemSlide('今後の予定', ['3D対応しない(Frame使って下さい)', '数式(対応)、グラフ表示(自分が本当に必要だった機能)','', 'あとは使うとき作る']));
     	slides.push(new TitleSlide('おわり'));
 	    game.pushScene(slides[0]);
     };
     game.start();
     
     document.body.addEventListener('mousedown', function(){
-    	game.next();
+    	enchant.Core.instance.next();
     });
 };
 
