@@ -53,6 +53,7 @@ var DSlide = enchant.Class.create(enchant.DOMScene, {
  * Sceneの拡張としてWebGLを利用した3Dスライドクラス
  *
  * FrameSlide内で行うことを推奨
+ *
 */
 
 /**
@@ -192,7 +193,7 @@ var FrameSlide = enchant.Class.create(DSlide, {
 //			this.removeChild(sprite);
 		});
 	},
-
+/*
     //フレーム内にキーイベントを送る
     addKeyEvent:function(){
         this._onkeydown = function(e){
@@ -215,19 +216,9 @@ var FrameSlide = enchant.Class.create(DSlide, {
 		this._frame.contentWindow.eval(javascript);
 	},
     messageListener:"javascript:console.log('messageListenerOnload'+ enchant.Core.instance.width);window.addEventListener('message', function (e, origin) { console.log('keydown');try {var jdata = eval(e.data);if (jdata.act == 'keydown') {enchant.Game.instance.dispatchEvent('keydown'); var button = enchant.Game.instance._keybind[jdata.value];var evt = new enchant.Event(button + 'buttondown');enchant.Game.instance.dispatchEvent(evt);} else if (jdata.act == 'keyup') {enchant.Game.instance.dispatchEvent('keyup');var button = enchant.Game.instance._keybind[jdata.value];var evt = new enchant.Event(button + 'buttonup');enchant.Game.instance.dispatchEvent(evt);}} catch (e) {console.log('bad call: ' + e);}});"
-    
 
-});
-
-
-/**
- * コードをハイライト表示するスライドクラス
- * ※未完成
 */
-var CodeSlide = enchant.Class.create(FrameSlide, {
-	initialize:function(url, width, height){
-		FrameSlide.call(this,'../code/demo/complete.html?' + url, width, height);
-	}
+
 });
 
 
@@ -317,8 +308,6 @@ var LazySprite = enchant.Class.create(enchant.Sprite, {
         enchant.Sprite.call(this, 1, 1);
         
         this._sImg = img;
-        this._sWidth;
-        this._sheight;
         this._sImg.parent = this;
 
         this._sImg.onload = function(){
@@ -334,9 +323,6 @@ var LazySprite = enchant.Class.create(enchant.Sprite, {
             this.parent.image.draw(o, 0, 0, _width, _height);
 //            this.image.context.drawImage(img,0, 0, _width, _height);
         };
-    },
-    loadComp:function(){
-        this.image = new Surface();
     }
 });
 
