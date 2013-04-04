@@ -74,7 +74,7 @@ var TitleSlide = enchant.Class.create(Slide, {
         if(this._title.getMetrics(title).width < enchant.Core.instance.width){
             this._title.x = enchant.Core.instance.width/2 - this._title._boundWidth/2;
         }else{
-            this._title.x = 0;
+            this._title.x = 10;
         }
 		this._title.y = (enchant.Core.instance.height) / 2;
         this._title.width = enchant.Core.instance.width * 0.8;
@@ -120,7 +120,7 @@ var ItemSlide = enchant.Class.create(Slide, {
 //           this._title.x = enchant.Core.instance.width * 0.2 - this._title._boundWidth/2; //左寄せのみする場合
             this._title.x = enchant.Core.instance.width/2 - this._title._boundWidth/2;
         }else{
-            this._title.x = 0;
+            this._title.x = 10;
         }
 		this._title.y = enchant.Core.instance.height * 0.05;
 		this._items = [];
@@ -245,6 +245,26 @@ var ImageSlide = enchant.Class.create(Slide, {
 });
 
 
+/*
+ * ヘルパー関数
+ */
+
+/*
+ * centering entity. match LazySprite.
+ * adjust apply(ax, ay)
+ *
+ * Entityのセンタリングを行う。オプションで調整値を適用
+ */
+function centering(entity, ax, ay){
+    entity.addEventListener('enterframe', function(){
+
+        //    console.log(entity._boundWidth);
+        entity.x = enchant.Core.instance.width/2 - entity.width/2 + ax;
+        entity.y = enchant.Core.instance.height/2 - entity.height/2 + ay;
+        this.removeEventListener('enterframe', arguments.callee);
+    });
+}
+
 /**
  * ラベル生成メソッド
 */
@@ -298,6 +318,46 @@ function createFormula(latex, size, color){
     return sprite;
 }
 
+function createPlot(plotarray, options){
+
+        /*
+         * plotting div must be "appendChild" 
+         * because of jqplotToImageStr and jqplotToImageElem call "offset()".
+         * 
+         */
+        var plot = document.createElement('div');
+        var num = chartNum();
+        plot.setAttribute('id', 'chart'+num);
+        document.getElementById("enchant-stage").appendChild(plot);
+        
+        var plotdata = $("#chart"+num).jqplot('chart'+num, plotarray, options);
+
+        /*
+         *same this method.
+         *
+         var imgData = $('#chart').jqplotToImageStr({});
+         var img = document.createElement('img');
+         img.src = imgData;
+         */
+        var imgElement = $("#chart"+num).jqplotToImageElem();
+        var spr = new LazySprite(imgElement);
+        $("#chart"+num).hide();
+
+        return spr;
+}
+
+/*
+ * privent div #id confricting 
+ * for createPlot.
+ */
+function counter () {
+    var i = 0;
+    return function() {
+        i = i + 1;
+        return i;
+    }
+}
+var chartNum = counter();        
 
 /*
  * 外部ファイル等読み込み時間を要する画像を非同期読み込みして
