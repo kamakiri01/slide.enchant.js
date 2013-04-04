@@ -1328,6 +1328,7 @@ enchant.EventTarget = enchant.Class.create({
                 for (var i = 0; i < len; i++) {
                     this.load(assets[i], loadFunc);
                 }
+
                 this.pushScene(this.loadingScene);
             } else {
                 this.dispatchEvent(new enchant.Event('load'));

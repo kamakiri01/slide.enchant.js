@@ -15,8 +15,63 @@ window.onload = function(){
     game.onload = function(){
     	slides.push(new TitleSlide('slide.enchant.js', 'v0.6.3対応<br>with enchant.js'));
 
-        slides.push(new TitleSlide('enchant.jsでプレゼンツールを作りました。'));
 
+        slides.push((function(){
+        
+            var s = new ItemSlide('グラフ表示');
+
+            plot = document.createElement('div');
+//            var plot = jQuery(document.createElement("div"));
+//            document.getElementsByTagName("body").item(0).appendChild(plot);
+            document.getElementById("enchant-stage").appendChild(plot);
+            plot.setAttribute("id", "chart");;
+            $("#chart");//.hide();
+            //            plot.id="chart";
+            var graphData = [
+                 [3,7,9,1,4,6,8,2,5],
+                 [4,8,6,3,6,3,5,7,9]
+            ];
+            var plotdata = $("#chart").jqplot('chart', graphData, {title: 'グラフ'});
+            console.log(plot);
+//            plot.show(); //only to jQuery object
+            //$("#chart")
+//            plotdata.offset({top:0, left:0})
+//            $("#chart").offset({top:10, left:10})
+//            $("#chart").offset( $("#enchant-stage").offset() );
+
+//             var options = {
+//                 "my": "top left",
+//                 "at": "top left",
+//                 "of": ".layer1"
+//             };
+//             $("#chart").position(options);
+// 
+//             jQuery.offset.setOffset(plot, {top:12, left:12})
+
+            var imgData = $('#chart').jqplotToImageStr({});
+            var imgElement = $("#chart").jqplotToImageElem();
+            var imgElem = $('<img/>').attr('src',imgData);
+//
+    var img = document.createElement('img');
+    img.src = imgData;
+
+            var hs = new Sprite(100,200);
+            hs._element = imgElement;
+            console.log(imgElement);
+            console.log(imgElem);
+            hs.x = 100;
+            hs.y = 300;
+            s.addChild(hs);
+
+            var spr = new LazySprite(imgElement);
+            spr.x=0;spr.y=0;
+           s.addChild(spr);
+
+            $("#chart").hide();
+            return s;
+        })());
+        
+        slides.push(new TitleSlide('enchant.jsでプレゼンツールを作りました。'));
     	slides.push(new TitleSlide('kondoさんに感謝', '元はkondoさん作'));
     	slides.push(new ItemSlide('こんなレイアウトができます', ['TitleSlide','ItemSlide', 'FrameSlide', 'ImageSlide', 'etc...']));
     	slides.push(new TitleSlide('TitleSlide', '表紙向けレイアウト'));
@@ -32,11 +87,11 @@ window.onload = function(){
         slides.push((function(scene){
             var view = new ItemSlide("TeXの数式を表示",['googleChartAPIを利用(ネット必須)<br>'+
                 'ローカル完結したいときは普通にスプライトを使う']);
-            var f = createFormula("E=\\pm\\frac{m}{\\sqrt{1-\\frac{v^2}{c^2}}}c^2", 80);
-            f.x = 300;
+            var f = createFormula("E=\\pm\\frac{m}{\\sqrt{1-\\frac{v^2}{c^2}}}c^2", 160);
+            f.x = 250;
             f.y = 300;
-            f.scaleX=2;
-            f.scaleY=2;
+            f.scaleX=1;
+            f.scaleY=1;
             view.addChild(f);
          
             return view;
