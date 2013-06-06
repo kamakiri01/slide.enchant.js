@@ -116,7 +116,7 @@ var TitleSlide = enchant.Class.create(Slide, {
  * 列挙型表示のスライドクラス
 */
 var ItemSlide = enchant.Class.create(Slide, {
-	initialize:function(title, items){
+	initialize:function(title, items, scale){
 		Slide.call(this);
 
         var _scale = scale;
