@@ -60,11 +60,16 @@ var DSlide = enchant.Class.create(enchant.DOMScene, {
  * トップページ風レイアウトのスライドクラス
 */
 var TitleSlide = enchant.Class.create(Slide, {
-	initialize:function(title, subtitle){
+	initialize:function(title, subtitle, scale){
 		Slide.call(this);
 
+        var _scale = scale;
+        if(_scale === undefined){
+            _scale = 1;
+        };
+
 		//タイトルの生成
-        this._title = createLabel(64, title);
+        this._title = createLabel(64 * _scale, title);
 		this.addChild(this._title);
 //        this._title._boundWidth *= 0.8;
 //        console.log(this._title._splitText);
@@ -82,7 +87,7 @@ var TitleSlide = enchant.Class.create(Slide, {
 
         //サブタイトルの生成
 		if(subtitle == undefined) subtitle = "";
-		this._subtitle = createLabel(32, subtitle);
+		this._subtitle = createLabel(32 * _scale, subtitle);
 		this.addChild(this._subtitle);
 		this._subtitle.color = '#a0a0a0';
         this._subtitle.x = this._title.x + this._title._boundWidth /2;
@@ -113,7 +118,13 @@ var TitleSlide = enchant.Class.create(Slide, {
 var ItemSlide = enchant.Class.create(Slide, {
 	initialize:function(title, items){
 		Slide.call(this);
-		this._title = createLabel(48, title);
+
+        var _scale = scale;
+        if(_scale === undefined){
+            _scale = 1;
+        };
+
+		this._title = createLabel(48 * _scale, title);
 		this.addChild(this._title);
 //        this._title._boundWidth *= 0.8;
         if(this._title.getMetrics(title).width < enchant.Core.instance.width){
@@ -126,7 +137,7 @@ var ItemSlide = enchant.Class.create(Slide, {
 		this._items = [];
         if(items != undefined){
             for(var i = 0; i < items.length; i++){
-                var item = createLabel(32, "" + items[i]);
+                var item = createLabel(32 * _scale, "" + items[i]);
                 item.x = enchant.Core.instance.width * 0.1;
                 item.width = enchant.Core.instance.width * 0.8;
                 item.y = this._title.y + this._title._boundHeight * 1.5 +i * (enchant.Core.instance.height - this._title.y - this._title._boundHeight *1.5) / items.length;
@@ -316,34 +327,6 @@ function createFormula(latex, size, color){
     
     var sprite = new LazySprite(img);
     return sprite;
-}
-
-function createPlot(plotarray, options){
-
-        /*
-         * plotting div must be "appendChild" 
-         * because of jqplotToImageStr and jqplotToImageElem call "offset()".
-         * 
-         */
-        var plot = document.createElement('div');
-        var num = chartNum();
-        plot.setAttribute('id', 'chart'+num);
-        document.getElementById("enchant-stage").appendChild(plot);
-        
-        var plotdata = $("#chart"+num).jqplot('chart'+num, plotarray, options);
-
-        /*
-         *same this method.
-         *
-         var imgData = $('#chart').jqplotToImageStr({});
-         var img = document.createElement('img');
-         img.src = imgData;
-         */
-        var imgElement = $("#chart"+num).jqplotToImageElem();
-        var spr = new LazySprite(imgElement);
-        $("#chart"+num).hide();
-
-        return spr;
 }
 
 /*
