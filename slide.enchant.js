@@ -176,8 +176,8 @@ window.addEventListener('message', function (e, origin) {
 var FrameSlide = enchant.Class.create(DSlide, {
 	initialize:function(url, width, height){
 		DSlide.call(this);
-		width = width | enchant.Core.instance.width;
-		height = height | enchant.Core.instance.height;
+		width = width;// | enchant.Core.instance.width;
+		height = height;// | enchant.Core.instance.height;
 		var sprite = new Sprite(width, height);
         sprite._element = document.createElement('div');
 
@@ -374,6 +374,9 @@ var LazySprite = enchant.Class.create(enchant.Sprite, {
  * スライドを戻す
 */
 enchant.Core.prototype.prev = function(){
+    showPrevSlide();
+};;
+var showPrevSlide = function(){
     if(slideIndex > 0){
         slideIndex--;
         var s = slides[slideIndex];
@@ -395,11 +398,13 @@ enchant.Core.prototype.prev = function(){
     return false;
 }
 
-
 /**
  * スライドを進める
 */
 enchant.Core.prototype.next = function(){
+    showNextSlide(); 
+};
+var showNextSlide = function(){
     if(slideIndex + 1 < slides.length){
         slideIndex++;
         var s = slides[slideIndex];
@@ -426,3 +431,5 @@ ocument.body.addEventListener('mousedown', function(){
     	enchant.Core.instance.next();
     });
 */
+
+
