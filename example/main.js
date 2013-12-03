@@ -1,19 +1,23 @@
+//サンプル
 var DIR_STR = './sampleImages/';
 var IMAGE_BEAR = DIR_STR + 'chara1.png';
 var IMAGE_ICON = DIR_STR + 'icon0.png';
 var IMAGE_13 = DIR_STR + '13A.jpg';
 
-//サンプル
 enchant();
 window.onload = function(){
-    var game = new Core(640, 480);
-    game.fps = SLIDE_FRAMELATE;
-    game.preload(IMAGE_BEAR,IMAGE_ICON,IMAGE_13);
-
-    slideSetup(game);
-
-    game.onload = function(){
-        slides.push(new TitleSlide('slide.enchant.js','v0.6.3 later<br>with enchant.js'));
+    var core = new Core(640, 480);
+    core.fps = 20;
+    core.preload(IMAGE_BEAR, IMAGE_ICON, IMAGE_13);
+    SLIDE.slideSetup({
+        'core': core,
+        'bg': '#f0f0f0',
+        'transitionSpeed': 10,
+        'transitonType': enchant.Easing.QUAD_EASEINOUT
+        });
+    core.onload = function(){
+        var slides = SLIDE.slides;
+        slides.push(new TitleSlide('slide.enchant.js','for v0.6.3 later<br>with enchant.js'));
         slides.push(new TitleSlide('enchant.jsで<br>プレゼンツール。'));
         slides.push(new ItemSlide('こんなレイアウトができます', ['TitleSlide','ItemSlide', 'FrameSlide', 'ImageSlide', 'etc...']));
         slides.push(new TitleSlide('TitleSlide', '表紙向けレイアウト'));
@@ -29,32 +33,21 @@ window.onload = function(){
         slides.push(new FrameSlide('./index.html', 320,480));
         slides.push(new TitleSlide('便利な機能 <br>extension.<br>slide.enchant.js'));
         slides.push((function(){
-            var view = new ItemSlide('TeX記述で数式を生成',['googleChartAPIを利用(ネット必須)<br>'+
-                'ローカル完結したいときは普通にスプライトを使う']);
-            var f = createFormula('E=\\pm\\frac{m}{\\sqrt{1-\\frac{v^2}{c^2}}}c^2', 160);
-            f.x = 250;
-            f.y = 300;
-            f.scaleX=1;
-            f.scaleY=1;
-            view.addChild(f);
+            var view = new ItemSlide('TeX記述で数式を生成',[]);
+            SLIDE.bindView(view);
+            SLIDE.addParagraph('googleChartAPIを利用(ネット必須)' +
+                '<br>ローカル完結したいときは普通にスプライトを使う', 30);
+            var f = createFormula('E=\\pm\\frac{m}{\\sqrt{1-\\frac{v^2}{c^2}}}c^2', 160, 'center');
+            SLIDE.linearLayoutAdder(f, view);
+            SLIDE.aligned_center(f);
+            console.log(f);
+            f.y = 250;
             return view;
-        })());
-        slides.push((function(){
-            var slide = new ItemSlide('配列からグラフ生成',['jqplotを利用(ローカルでもOK)']);
-            var graphData = [
-                [3,7,9,1,4,6,8,2,5],
-                [4,8,6,3,6,3,5,7,9]
-            ];
-            var cs = createPlot(graphData,  {title: 'グラフ'});
-            cs.x = 5;
-            cs.y = 5;
-            centering(cs, 0, 60);
-            slide.addChild(cs);
-            return slide;
         })());
         slides.push(new TitleSlide('ゲームエンジン<br>だからできること'));
         slides.push(new TitleSlide('スライドにenchant.jsの処理を付加'));
         slides.push((function(scene){
+            var game = enchant.Core.instance;
             for(var i = 0; i < 20; i++){
                 var sprite = new Sprite(32, 32);
                 sprite.image = game.assets[IMAGE_BEAR];
@@ -73,46 +66,24 @@ window.onload = function(){
                         this.parentScene.removeChild(this);
                     }
                 });
-                sprite.addEventListener(enchant.Event.EXIT, function(){
-                    console.log('now!');
-                });
                 scene.addChild(sprite);
             }
         }));
         slides.push((function(){
-            var view = new ItemSlide('スライド自体をゲームっぽくもできる');
-            var sprite = new Sprite(32,32);
-            sprite.image = game.assets[IMAGE_BEAR];
-            sprite.scaleX = 2;
-            sprite.scaleY = 2;
-            sprite.x = Game.instance.width *0.1;
-            sprite.y = Core.instance.height /2;
-            view.addChild(sprite);
-            sprite.addEventListener('enterframe', function(){
-                if(game.input.up){
-                    this.y-=8;
-                }else if(game.input.down){
-                    this.y+=8;
-                }
-                if(this.age % 10 === 0){
-                    var b = new Sprite(16,16);
-                    b.image = game.assets['icon0.png'];
-                    b.frame = 16;
-                    b.x = sprite.x;
-                    b.y = sprite.y;
-                    view.addChild(b);
-                    b.onenterframe = function(){this.x+=15;if(this.x>enchant.Core.instance.width){view.removeChild(this);}};
-                }
-            });
+            var view = new ItemSlide('レイアウト自由度',
+                ['テンプレートに上書も自由' ,
+                'レイアウトの自動調整もできる',
+                '拡張性:たぶんある']);
+            SLIDE.bindView(view);
+            for(var i=0;i<8;i++){
+                SLIDE.addParagraph('test'+ (i+1), 50-i*5, 'right');
+            }
             return view;
         })());
-        slides.push(new ItemSlide('今後の予定', ['3D対応しない(Frame使って下さい)', '数式(対応)、グラフ表示<br>(自分が本当に必要だった機能)<br>→jqplotに対応','','もっと高速なスライド作成支援','', 'あとは使うとき作る']));
-        slides.push(new TitleSlide('おわり'));
-        game.pushScene(slides[0]);
+        slides.push(new SLIDE.TitleSlide('おわり'));
+
+        core.pushScene(slides[0]);
     };
-    game.start();
-    document.body.addEventListener('mousedown', function(){
-        enchant.Core.instance.next();
-    });
+    core.start();
 };
 
