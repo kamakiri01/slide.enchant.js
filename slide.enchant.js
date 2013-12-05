@@ -1,6 +1,6 @@
 /**
  * @fileOverview slide.encahant.js
- * @version 0.2.2
+ * @version 0.3.0
  * @require enchant.js v0.6.3+
  * @author kamakiri01
  *
@@ -155,6 +155,7 @@ window.addEventListener('message', function (e, origin) {
     }
 });
 */
+
 /*
  * frameを表示するスライドクラス
  * @param {String} url フレーム内ページのURL
@@ -211,7 +212,7 @@ SLIDE.FrameSlide = enchant.Class.create(SLIDE.DSlide, {
     messageListener:'javascript:console.log('messageListenerOnload'+ enchant.Core.instance.width);window.addEventListener('message', function (e, origin) { console.log('keydown');try {var jdata = eval(e.data);if (jdata.act == 'keydown') {enchant.Game.instance.dispatchEvent('keydown'); var button = enchant.Game.instance._keybind[jdata.value];var evt = new enchant.Event(button + 'buttondown');enchant.Game.instance.dispatchEvent(evt);} else if (jdata.act == 'keyup') {enchant.Game.instance.dispatchEvent('keyup');var button = enchant.Game.instance._keybind[jdata.value];var evt = new enchant.Event(button + 'buttonup');enchant.Game.instance.dispatchEvent(evt);}} catch (e) {console.log('bad call: ' + e);}});"
 
 */
-});
+})
 
 /**
  * 画像を表示するスライドクラス
@@ -302,6 +303,7 @@ SLIDE.showNextSlide = function(){
     console.log('SLIDE.slideIndex:' + SLIDE.slideIndex);
     return false;
 };
+
 /*
  * UIイベントをcoreインスタンスに付与する
  * enchant.Core.instanceで同等動作が行えるので引数は不要になるかもしれない
@@ -340,16 +342,19 @@ SLIDE.slideSetup = function(setConf){
         enchant.Core.instance.next();
     });
 };
+
 /*
  * スライドレイアウト系メソッド
  */
 /*
  * 編集中のスライドを指定する
  * レイアウト用ラッパーメソッドが参照する
+ * @param {SLIDE.Slide} view レイアウト関数が参照するviewｗを指定
  */
 SLIDE.bindView = function(view){
     SLIDE.currentBindView = view;
 };
+
 /*
  * Entityのセンタリングを行う。オプションで調整値を適用
  * @param {enchant.Entity} entity 座標補正するEntity
@@ -374,6 +379,7 @@ SLIDE.aligned_center = function(entity, ax){
         });
     }
 };
+
 /*
  * Entityの左寄せを行う。オプションで調整値を適用
  * @param {enchant.Entity} entity 座標補正するEntity
@@ -389,6 +395,7 @@ SLIDE.aligned_left = function(entity, ax){
         this.removeEventListener('enterframe', arguments.callee);
     });
 };
+
 /*
  * Entityの右寄せを行う。オプションで調整値を適用
  * @param {enchant.Entity} entity 座標補正するEntity
@@ -412,8 +419,8 @@ SLIDE.aligned_right = function(entity, ax){
             this.removeEventListener('enterframe', arguments.callee);
         });
     }
-
 };
+
 /*
  * alignに従って座標を付与
  * @param {enchant.Entity} entity 座標補正するEntity
@@ -432,6 +439,7 @@ SLIDE.aligner = function(entity, align){
             break;
     }
 };
+
 /*
  * 上から順に重複を避けてスプライトを配置
  * view.layoutIndexにリニア配置要素を登録する
@@ -478,6 +486,7 @@ SLIDE.createLabel = function(size, text, color){
     }
 	return label;
 };
+
 /**
  * 数式スプライト生成メソッド(ネットワーク接続必須)
  * エスケープ文字を含んだTeX形式の数式スプライトを生成する
@@ -511,6 +520,7 @@ SLIDE.createFormula = function(latex, size, color){
     var sprite = new SLIDE.LazySprite(img);
     return sprite;
 };
+
 /*
  * 外部ファイル等読み込み時間を要する画像を非同期読み込みして
  * スプライトに利用する
@@ -535,6 +545,7 @@ SLIDE.LazySprite = enchant.Class.create(enchant.Sprite, {
         };
     }
 });
+
 /*
  * 文字列を生成して配置する。
  * createLabelとlinearLayoutAdderのラッパー
@@ -550,6 +561,7 @@ SLIDE.addParagraph = function(str, size, align){
     SLIDE.aligner(p, align);
     SLIDE.linearLayoutAdder(p, SLIDE.currentBindView);
 };
+
 /*
  * 画像を生成して配置する。事前にpreloadが必要
  * new Sprite()とlinearLayoutAdderのラッパー
