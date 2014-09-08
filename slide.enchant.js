@@ -29,6 +29,11 @@ SLIDE.Slide = enchant.Class.create(enchant.CanvasScene, {
 		enchant.CanvasScene.call(this);
         this.backgroundColor = SLIDE.SLIDE_BACKGROUNDCOLOR;
         this.layoutIndex = [];
+        this.slideNumber = new Label("");
+        this.addChild(this.slideNumber);
+        this.addEventListener('enterframe', function(){
+            this.slideNumber.text = SLIDE.slideIndex + "/" + SLIDE.slides.length;
+        });
 	}
 });
 
@@ -156,7 +161,7 @@ window.addEventListener('message', function (e, origin) {
 });
 */
 
-/*
+/**
  * frameを表示するスライドクラス
  * @param {String} url フレーム内ページのURL
  * @param {Number} width フレーム横サイズ
@@ -304,7 +309,7 @@ SLIDE.showNextSlide = function(){
     return false;
 };
 
-/*
+/**
  * UIイベントをcoreインスタンスに付与する
  * enchant.Core.instanceで同等動作が行えるので引数は不要になるかもしれない
  * @param {enchant.Core} core Coreインスタンス
@@ -346,7 +351,8 @@ SLIDE.slideSetup = function(setConf){
 /*
  * スライドレイアウト系メソッド
  */
-/*
+
+/**
  * 編集中のスライドを指定する
  * レイアウト用ラッパーメソッドが参照する
  * @param {SLIDE.Slide} view レイアウト関数が参照するviewｗを指定
@@ -355,7 +361,7 @@ SLIDE.bindView = function(view){
     SLIDE.currentBindView = view;
 };
 
-/*
+/**
  * Entityのセンタリングを行う。オプションで調整値を適用
  * @param {enchant.Entity} entity 座標補正するEntity
  * @param {Number} ax 横方向の補正値（任意）
@@ -380,7 +386,7 @@ SLIDE.aligned_center = function(entity, ax){
     }
 };
 
-/*
+/**
  * Entityの左寄せを行う。オプションで調整値を適用
  * @param {enchant.Entity} entity 座標補正するEntity
  * @param {Number} ax 横方向の補正値（任意）
@@ -396,7 +402,7 @@ SLIDE.aligned_left = function(entity, ax){
     });
 };
 
-/*
+/**
  * Entityの右寄せを行う。オプションで調整値を適用
  * @param {enchant.Entity} entity 座標補正するEntity
  * @param {Number} ax 横方向の補正値（任意）
@@ -421,10 +427,11 @@ SLIDE.aligned_right = function(entity, ax){
     }
 };
 
-/*
+/**
  * alignに従って座標を付与
  * @param {enchant.Entity} entity 座標補正するEntity
- * param {String} align 寄せる方向
+ * @param {String} align 寄せる方向
+ *
  */
 SLIDE.aligner = function(entity, align){
     switch(align){
@@ -521,11 +528,12 @@ SLIDE.createFormula = function(latex, size, color){
     return sprite;
 };
 
-/*
+/**
  * 外部ファイル等読み込み時間を要する画像を非同期読み込みして
  * スプライトに利用する
  * @param {String}
- * */
+ * 
+*/
 SLIDE.LazySprite = enchant.Class.create(enchant.Sprite, {
     initialize:function(img){
         enchant.Sprite.call(this, 1, 1);
@@ -546,13 +554,13 @@ SLIDE.LazySprite = enchant.Class.create(enchant.Sprite, {
     }
 });
 
-/*
+/**
  * 文字列を生成して配置する。
  * createLabelとlinearLayoutAdderのラッパー
  * @param {String} str 挿入する文言
  * @param {Number} size 文字サイズ
  * @param {String} align レイアウト補正（任意）
- */
+*/
 SLIDE.addParagraph = function(str, size, align){
     if(SLIDE.currentBindView === null){
         throw new Error('view is not bound.');
@@ -562,7 +570,7 @@ SLIDE.addParagraph = function(str, size, align){
     SLIDE.linearLayoutAdder(p, SLIDE.currentBindView);
 };
 
-/*
+/**
  * 画像を生成して配置する。事前にpreloadが必要
  * new Sprite()とlinearLayoutAdderのラッパー
  * @param {String} assetName 挿入する画像名
