@@ -6,7 +6,7 @@ Library for making slide-view in enchant.js.
 Demo
 --------
 
-[Demo site](http://yie.jp/garage/slide/)
+[Demo site](http://dev.yie.jp/slide/)
 
 Validation
 -------------
